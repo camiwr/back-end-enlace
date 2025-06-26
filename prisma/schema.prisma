@@ -23,10 +23,10 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  ownedCommunities Community[] @relation("CommunityOwner") // Relacionamento com comunidades que ele criou
-  communityMemberships Community[] @relation("CommunityMembers") // Comunidades das quais ele faz parte
+  ownedCommunities Community[] @relation("CommunityOwner")
+  communityMemberships Community[] @relation("CommunityMembers")
 
-  organizedEvents Event[] @relation("EventOrganizer") // Eventos que ele criou
+  organizedEvents Event[] @relation("EventOrganizer") 
   eventParticipations Event[] @relation("EventParticipants")
 }
 
