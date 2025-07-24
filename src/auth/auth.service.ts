@@ -10,13 +10,13 @@ export class AuthService {
     constructor(private prisma: PrismaService, private jwtService: JwtService) {}
     async register(name: string, email: string, password: string) {
   // Verifica se o e-mail pertence ao domínio do IFPI
-  if (!email.endsWith('@ifpi.edu.br')) {
-    throw new BadRequestException('Email must be from IFPI domain');
+  if (!email.endsWith('@aluno.ifpi.edu.br')) {
+    throw new BadRequestException('O e-mail deve ser do domínio IFPI');
   }
 
   // Verifica se o e-mail já existe no banco de dados
   const existingUser = await this.prisma.user.findUnique({ where: { email } });
-  if (existingUser) throw new BadRequestException('Email already in use');
+  if (existingUser) throw new BadRequestException('Email já cadastrado');
 
   // Criptografa a senha
   const hashedPassword = await bcrypt.hash(password, 10);
