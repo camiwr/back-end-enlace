@@ -1,41 +1,61 @@
+-- CreateEnum
+CREATE TYPE "Profile" AS ENUM ('USER', 'ADMIN');
+
+-- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "profile" "Profile" NOT NULL DEFAULT 'USER',
+    "photoProfile" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateTable
 CREATE TABLE "Community" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "ownerId" TEXT NOT NULL,
+    "ownerId" INTEGER NOT NULL,
 
     CONSTRAINT "Community_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Event" (
-    "id" TEXT NOT NULL,
+    "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "organizerId" TEXT NOT NULL,
+    "organizerId" INTEGER NOT NULL,
 
     CONSTRAINT "Event_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "_CommunityMembers" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
 
     CONSTRAINT "_CommunityMembers_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateTable
 CREATE TABLE "_EventParticipants" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
 
     CONSTRAINT "_EventParticipants_AB_pkey" PRIMARY KEY ("A","B")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Community_name_key" ON "Community"("name");

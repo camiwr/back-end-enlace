@@ -14,15 +14,22 @@ export class CommunitiesService {
       data: {
         name: data.name,
         description: data.description,
-        ownerId: userId,
+        ownerId: Number(userId),
       },
     });
   }
 
   async joinCommunity(userId: string, communityId: string) {
     return this.prisma.community.update({
-      where: { id: communityId },
-      data: { members: { connect: { id: userId } } },
+      where: { id: Number(communityId) },
+      data: { members: { connect: { id: Number(userId) } } },
+    });
+  }
+
+  async leaveCommunity(userId: string, communityId: string) {
+    return this.prisma.community.update({
+      where: { id: Number(communityId) },
+      data: { members: { disconnect: { id: Number(userId) } } },
     });
   }
 }

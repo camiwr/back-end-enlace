@@ -17,14 +17,14 @@ export class EventsService {
         title: data.title,
         description: data.description,
         date: new Date(data.date),
-        organizerId: userId,
+        organizerId: Number(userId),
       },
     });
   }
 
   async registerUser(userId: string, eventId: string) {
     const event = await this.prisma.event.findUnique({
-      where: { id: eventId },
+      where: { id: Number(eventId) },
     });
 
     if (!event) {
@@ -32,10 +32,10 @@ export class EventsService {
     }
 
     return this.prisma.event.update({
-      where: { id: eventId },
+      where: { id: Number(eventId) },
       data: {
         participants: {
-          connect: { id: userId },
+          connect: { id: Number(userId) },
         },
       },
       include: {

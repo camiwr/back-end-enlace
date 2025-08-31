@@ -1,17 +1,18 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.use(cookieParser());
+
   app.enableCors({
-origin: [
-      'http://localhost:3000',        
-      'https://enlace-tzs1-camillas-projects-4d792947.vercel.app' 
-    ],    
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: 'http://localhost:3000',
     credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization, X-Requested-With',
   });
 
   const config = new DocumentBuilder()
@@ -24,7 +25,7 @@ origin: [
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  const port = parseInt(process.env.PORT ?? '3000');
+  const port = parseInt(process.env.PORT ?? '3001');
 
   await app.listen(port);
   console.log(`🚀 Server rodando em http://localhost:${port}`);

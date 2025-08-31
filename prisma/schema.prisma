@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
+  id           Int      @id @default(autoincrement())
   name         String
   email        String   @unique
   password     String
@@ -36,23 +36,23 @@ enum Profile {
 }
 
 model Community {
-  id          String   @id @default(uuid())
+  id          Int      @id @default(autoincrement())
   name        String   @unique
   description String
   createdAt   DateTime @default(now())
-  ownerId     String
+  ownerId     Int
 
   owner       User     @relation(fields: [ownerId], references: [id], name: "CommunityOwner")
   members     User[]   @relation("CommunityMembers")
 }
 
 model Event {
-  id          String   @id @default(uuid())
+  id          Int      @id @default(autoincrement())
   title       String
   description String
   date        DateTime
   createdAt   DateTime @default(now())
-  organizerId String
+  organizerId Int
 
   organizer   User     @relation(fields: [organizerId], references: [id], name: "EventOrganizer")
   participants User[]  @relation("EventParticipants")

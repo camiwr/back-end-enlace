@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Request, Param } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CommunitiesService } from './communities.service';
 
@@ -17,9 +17,15 @@ export class CommunitiesController {
     return this.communitiesService.createCommunity(req.user.id, data);
   }
 
-  @Post(':communityId/join')
+  @Post(':id/join')
   @UseGuards(JwtAuthGuard)
-  async joinCommunity(@Request() req, @Body() data) {
-    return this.communitiesService.joinCommunity(req.user.id, data.communityId);
+  async joinCommunity(@Request() req, @Param('id') communityId: string) {
+    return this.communitiesService.joinCommunity(req.user.id, communityId);
+  }
+
+  @Post(':id/leave')
+  @UseGuards(JwtAuthGuard)
+  async leaveCommunity(@Request() req, @Param('id') communityId: string) {
+    return this.communitiesService.leaveCommunity(req.user.id, communityId);
   }
 }

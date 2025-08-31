@@ -8,8 +8,8 @@ export class UsersController {
 
   @Get('profile')
   @UseGuards(JwtAuthGuard)
-  getProfile() {
-    return { message: 'Authenticated user access granted!' };
+  getProfile(@Request() req) {
+    return { message: 'Authenticated user access granted!', user: req.user };
   }
 
   @Get('my-communities')
@@ -19,7 +19,6 @@ export class UsersController {
       where: { id: req.user.id },
       include: { communityMemberships: true },
     });
-
     return user.communityMemberships;
   }
 }
