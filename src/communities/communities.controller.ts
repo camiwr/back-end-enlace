@@ -1,31 +1,54 @@
-import { Controller, Get, Post, Body, UseGuards, Request, Param } from '@nestjs/common';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { CommunitiesService } from './communities.service';
+import { CreateCommunityDto } from './dto/create-community.dto';
+import { UpdateCommunityDto } from './dto/update-community.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AdminGuard } from '../auth/admin/admin.guard';
 
 @Controller('communities')
 export class CommunitiesController {
   constructor(private readonly communitiesService: CommunitiesService) {}
 
   @Get()
-  async getAllCommunities() {
-    return this.communitiesService.getAllCommunities();
+  findAll() {
+    return this.communitiesService.findAll();
   }
 
-  @Post('create')
-  @UseGuards(JwtAuthGuard)
-  async createCommunity(@Request() req, @Body() data) {
-    return this.communitiesService.createCommunity(req.user.id, data);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.communitiesService.findOne(+id);
   }
 
-  @Post(':id/join')
   @UseGuards(JwtAuthGuard)
-  async joinCommunity(@Request() req, @Param('id') communityId: string) {
-    return this.communitiesService.joinCommunity(req.user.id, communityId);
+  @Post(':communityId/join')
+  joinCommunity(@Param('communityId') communityId: string, @Request() req) {
+    return this.communitiesService.joinCommunity(+communityId, req.user.userId);
   }
 
-  @Post(':id/leave')
   @UseGuards(JwtAuthGuard)
-  async leaveCommunity(@Request() req, @Param('id') communityId: string) {
-    return this.communitiesService.leaveCommunity(req.user.id, communityId);
+  @Delete(':communityId/leave')
+  leaveCommunity(@Param('communityId') communityId: string, @Request() req) {
+    return this.communitiesService.leaveCommunity(+communityId, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  create(@Body() createCommunityDto: CreateCommunityDto, @Request() req) {
+    console.log('Communities Controller - Requisição POST para criar comunidade recebida.');
+    console.log('Communities Controller - Conteúdo de req.user:', req.user); // <-- LOG AQUI
+    console.log('Communities Controller - userId a ser enviado:', req.user.userId); // <-- LOG AQUI
+    return this.communitiesService.create(createCommunityDto, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateCommunityDto: UpdateCommunityDto) {
+    return this.communitiesService.update(+id, updateCommunityDto);
+  }
+
+  @UseGuards(JwtAuthGuard, AdminGuard)
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.communitiesService.remove(+id);
   }
 }

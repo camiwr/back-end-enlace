@@ -22,7 +22,7 @@ export class AuthController {
     const token = await this.authService.login(data.email, data.password);
     response.cookie('access_token', token.access_token, {
       httpOnly: true,
-      secure: true, // Use apenas em produção com HTTPS
+      secure: true, 
       sameSite: 'strict',
     });
     return { message: 'Login realizado com sucesso' };
